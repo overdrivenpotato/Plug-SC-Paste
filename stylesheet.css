@@ -1,0 +1,16 @@
+.scpaster-change-link {
+position:absolute;
+top:140px;
+right:-68px;
+transform:rotate(90deg);
+-webkit-transform:rotate(90deg);
+}
+
+.scpaster-button {
+position:absolute;
+width:16px;
+height:16px;
+right:37px;
+top:258px;
+cursor:pointer;
+}
