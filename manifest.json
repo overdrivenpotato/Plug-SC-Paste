@@ -3,7 +3,7 @@
 
   "name": "Plug.dj Soundcloud paste",
   "description": "Gives you a button to paste your soundcloud link into the plug.dj chat",
-  "version": "0.2.2",
+  "version": "0.3.1",
   "author": "overdrivenpotato",
 
   "permissions": [

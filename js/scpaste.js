@@ -1,3 +1,6 @@
+/*
+ * Shows a prompt to allow you to change your currently stored URL. Checks to see if inputted URL is valid.
+ */
 function updateSC(oldLink)
 {
     var newLink = prompt("Input a new Soundcloud link or press cancel", oldLink);
@@ -6,7 +9,6 @@ function updateSC(oldLink)
         if(newLink.indexOf("soundcloud.com/") == -1)
         {
             alert("Invalid Soundcloud Link!");
-            return;
         }
         else
         {
@@ -21,13 +23,19 @@ function updateSC(oldLink)
     }
 }
 
+/*
+ * Gets called when the soundcloud button is clicked. Pastes 'link' into the chat.
+ */
 function scButtonClicked(link)
 {
     if(typeof link === "undefined")
-        link = "Use button on the right to setup!";
+        link = "Right-click the button to setup! -->";
     document.getElementById("chat-input-field").value += link;
 }
 
+/*
+ * Gets the locally stored soundcloud URL and passes it to method cont
+ */
 function getSCLink(cont) {
 	chrome.storage.local.get("sclink", function(result){
         cont(result.sclink);
@@ -35,6 +43,10 @@ function getSCLink(cont) {
 }
 
 init();
+
+/*
+ * Sets up the page for the plugin.
+ */
 function init()
 {
     //Make sure page is loaded
@@ -42,41 +54,31 @@ function init()
     if (audience != null && audience.firstElementChild != null) {
         //Resize chat to fit button
         document.getElementById("chat-input-field").style.width = "274px";
-        document.getElementsByClassName("chat-input")[0].style.width = "275px";
+//        document.getElementsByClassName("chat-input")[0].style.width = "275px";
+        document.getElementById("chat-input").style.width = "295px";
 
         //Soundcloud icon
         var icon = document.createElement("img");
-        icon.setAttribute("src", "https://a2.sndcdn.com/assets/images/sc-icons/favicon-154f6af5.ico");
+        icon.setAttribute("src", "http://i.imgur.com/4rjCPbW.png");
 
         //Create icon on page
         var paster = document.createElement("a");
         paster.setAttribute("class", "scpaster-button");      //CSS Class
         paster.setAttribute("href", "#");
         paster.appendChild(icon);
-        document.getElementById("button-chat-expand").parentNode.insertBefore //Insert into the page
-            (paster, document.getElementById("button-chat-expand"));          //CSS places in correct pos
+        var referenceNode = document.getElementById("chat-input").children[0];
+        referenceNode.parentNode.insertBefore //Insert into the page
+            (paster, referenceNode);          //CSS places in correct pos
 
-        paster.addEventListener("click", function() {
-            getSCLink(scButtonClicked);
+        //Creates an event listener for right click; provides the option to change the URL
+        paster.addEventListener("contextmenu", function(e){
+            getSCLink(updateSC);
+            e.preventDefault();
         });
 
-        //Resizes button with chat
-        document.getElementById("button-chat-expand").setAttribute("onClick",
-            "document.getElementsByClassName(\"scpaster-button\")[0].style.top=\"557px\"");
-        document.getElementById("button-chat-collapse").setAttribute("onClick",
-            "document.getElementsByClassName(\"scpaster-button\")[0].style.top=\"258px\"");
-
-        //Change SC Button
-        var updateButton = document.createElement("button");
-        updateButton.innerHTML = "Change SC Link";
-        updateButton.setAttribute("name", "button");
-        updateButton.setAttribute("type", "button");
-        updateButton.setAttribute("class", "scpaster-change-link");
-
-        document.getElementById("chat").appendChild(updateButton);
-
-        updateButton.addEventListener("click", function () {
-            getSCLink(updateSC);
+        //Creates an event listener for a click; Pastes the stored URL into the chat box.
+        paster.addEventListener("click", function() {
+            getSCLink(scButtonClicked);
         });
     } else {
         setTimeout(init, 250);
